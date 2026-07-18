@@ -25,15 +25,22 @@ lotro_freecam_cinematic.js
 lotro_freecam_minimal.js
 
 SHA-256  5c42c7d1a1e663a0c1395ae3b1dff3002ad6c6a6197505a1ee8f95d02b224fa0
+
 SHA-1    67d6e4aebb8cccaf07a74cc766bf26777d148451
+
 MD5      afc50d49ba9adeede1c9cf6b931cfe43
-Boyut    11.223 bayt
+
+Size    11.223 bayt
+
 lotro_freecam_cinematic.js
 
 SHA-256  b95e27d78dc30042b02206cea569778cba5c66661bd4d63a4e90bd116d91bb86
+
 SHA-1    bef8aa154b6a7e9340608271636c2aafd4d29de0
+
 MD5      03d1101088c38fc17cba5caaf314c82f
-Boyut    228.180 bayt
+
+Size    228.180 bayt
 
 ## Which file do you want?
 
