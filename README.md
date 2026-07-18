@@ -11,6 +11,25 @@ while it's attached, and puts them back when you close it.
 It's open source, and I'd genuinely rather you read it (or have an AI read it) than take
 my word for anything below. There's a whole section on that further down.
 
+> ### ⚠️ Read this first
+>
+> **This edits the game client's memory, and that is against LOTRO's Terms of Service.**
+> The terms prohibit third-party software that interacts with the client, and there is no
+> exception for "but it's only cosmetic." Memory injection is also exactly the kind of
+> thing client integrity checks are built to notice — assume it is visible if anyone
+> looks. I have not put anything in here to hide it, and I'm not going to.
+>
+> Nothing in this touches the server, your character, combat, loot or the network. It is a
+> camera and a renderer, and you can verify that yourself — the whole thing is readable.
+> That does not change the paragraph above.
+>
+> Use it parked in the open world for screenshots rather than in a group, instance, raid
+> or PvMP, and think about which account you run it on. **The risk is yours.** If that
+> isn't a trade you want to make, close this page — no hard feelings, it's a reasonable
+> call.
+>
+> The longer version is in [One thing to know first](#one-thing-to-know-first).
+
 virustotal:
 
 https://www.virustotal.com/gui/file/5c42c7d1a1e663a0c1395ae3b1dff3002ad6c6a6197505a1ee8f95d02b224fa0?nocache=1 5c42c7d1a1e663a0c1395ae3b1dff3002ad6c6a6197505a1ee8f95d02b224fa0 lotro_freecam_minimal.js
