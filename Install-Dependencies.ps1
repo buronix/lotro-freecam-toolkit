@@ -38,7 +38,7 @@ $ErrorActionPreference = 'Stop'
 # Bumped every time this script changes - printed in the banner below so that when
 # something goes wrong, the pasted output makes it obvious whether the reporter is
 # actually running the latest fix or a stale copy of the script.
-$InstallerVersion = '1.7'
+$InstallerVersion = '1.8'
 
 function Write-Step  ($msg) { Write-Host "`n==> $msg" -ForegroundColor Cyan }
 function Write-Ok    ($msg) { Write-Host "    $msg" -ForegroundColor Green }
@@ -205,6 +205,26 @@ function Test-PythonOk {
     }
 }
 
+function Test-FridaOk {
+    # Just resolving a `frida` command name on PATH isn't enough: pip's Windows entry-point
+    # scripts (frida.exe, etc.) are tiny launcher stubs with the *absolute path* of the
+    # interpreter they were installed against baked in at install time. If that Python is
+    # later uninstalled/replaced (e.g. this script starts targeting a newer version, or the
+    # user reinstalled Python some other way), the old shim is still a real file that
+    # Get-Command happily finds - it just fails the instant it's run, with "Fatal error in
+    # launcher: Unable to create process ... The system cannot find the file specified."
+    # Actually invoking --version is the only way to tell a live install from that kind of
+    # stale leftover.
+    $exe = Get-CommandPath 'frida'
+    if (-not $exe) { return $false }
+    try {
+        & $exe --version *> $null
+        return ($LASTEXITCODE -eq 0)
+    } catch {
+        return $false
+    }
+}
+
 # Wrapped in try/catch/finally so the window always pauses for a keypress at the end,
 # showing either the success message or the actual error - instead of a throw partway
 # through closing the window immediately (which is what a double-clicked .bat does the
@@ -343,9 +363,14 @@ try {
     Write-Step "Checking for Frida..."
     Update-SessionPath
 
-    if (Get-CommandPath 'frida') {
+    if (Test-FridaOk) {
         Write-Ok "Already installed: $(& (Get-CommandPath 'frida') --version 2>&1)"
     } else {
+        if (Get-CommandPath 'frida') {
+            Write-Note ("Found a 'frida' command on PATH, but it doesn't run - it's a leftover " +
+                "shim from a Python install that's since been removed or replaced (its baked-in " +
+                "interpreter path no longer exists). Reinstalling for the current Python.")
+        }
         Write-Step "Installing frida-tools via pip (this pulls in Frida itself too)..."
         # --user for the same reason as the pip upgrade above - required, not optional,
         # whenever the underlying Python install isn't user-writable.
@@ -368,10 +393,12 @@ try {
         # to the user's PATH (so "Start LOTRO Freecam.bat" finds it in new windows too).
         Add-ToUserPath (Get-PythonUserScriptsPath)
         Update-SessionPath
-        if (-not (Get-CommandPath 'frida')) {
-            throw ("frida-tools installed but the 'frida' command isn't on PATH in this " +
-                   "window. Close this window, open a new one, and run 'frida --version' " +
-                   "to confirm it worked.")
+        if (-not (Test-FridaOk)) {
+            throw ("frida-tools installed but the 'frida' command isn't working in this " +
+                   "window - it may be shadowed on PATH by a stale shim from another Python " +
+                   "install. Close this window, open a new one, and run 'frida --version' " +
+                   "to confirm it worked (if that still fails, check `where frida` for a " +
+                   "leftover entry ahead of the current Python's Scripts folder on PATH).")
         }
         Write-Ok "Installed: $(& (Get-CommandPath 'frida') --version 2>&1)"
     }
